@@ -68,6 +68,9 @@ uvicorn fastapi_app:app --reload
 This will start the backend at:
 <pre>http://127.0.0.1:8000</pre>
 
+Check the interactive API docs at:
+<pre>http://127.0.0.1:8000/docs</pre>
+
 ---
 
 ## 📬 Testing with Postman
