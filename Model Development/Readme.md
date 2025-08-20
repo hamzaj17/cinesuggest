@@ -14,8 +14,7 @@ It uses Python (FastAPI backend) and can be tested using **Postman**.
 │   │── models/     # Saved/trained models
 │   │── src/        # All Python source code files
 │   │── fastapi_app.py  # FastAPI app for API testing
-│── README.md
-
+│── Readme.md
 </pre>
 
 ---
