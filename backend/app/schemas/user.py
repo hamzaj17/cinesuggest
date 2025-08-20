@@ -1,16 +1,18 @@
 from pydantic import BaseModel, EmailStr
-from typing import Optional
+from datetime import datetime
 
-# Request body for creating a new user
-class UserCreate(BaseModel):
+# --- Base Schema ---
+class UserBase(BaseModel):
     email: EmailStr
-    password: str  # plain text for now (later we’ll hash it)
 
-# Response body for returning user info (excluding password!)
-class UserOut(BaseModel):
+# --- Create Schema (request body when registering user) ---
+class UserCreate(UserBase):
+    password: str
+
+# --- Response Schema (returned in API responses) ---
+class UserOut(UserBase):
     id: int
-    email: EmailStr
-    role: str
+    created_at: datetime
 
     class Config:
-        orm_mode = True  # allows returning SQLAlchemy objects directly
+        from_attributes = True  # allows SQLAlchemy model -> Pydantic schema
