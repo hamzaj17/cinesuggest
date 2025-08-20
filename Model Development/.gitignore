@@ -1,0 +1,17 @@
+# Ignore model files
+*.pkl
+*.joblib
+*.h5
+*.pt
+
+# Ignore data
+*.csv
+*.tsv
+*.parquet
+
+# Python cache
+__pycache__/
+*.pyc
+
+# VS Code
+.vscode/
