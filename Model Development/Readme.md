@@ -117,9 +117,19 @@ You will get movie recommendations generated through Collaborative Filtering.
 
 ---
 
+## Pre-trained Model
+
+The trained recommendation model is available on Google Drive:  
+[Download Model Here](https://drive.google.com/drive/folders/1Oh7V35hRQ1zaSOLDwVH1ov6yFhClkTsl?usp=drive_link)
+
+After downloading, place the file in the `models/` directory before running the fastapi.
+
+---
+
 ## 📥 Dataset Access
 
 For access to the datasets, please drop an email:
 
 📧 [hamzabjaved04@gmail.com](mailto:hamzabjaved04@gmail.com)
+
 
