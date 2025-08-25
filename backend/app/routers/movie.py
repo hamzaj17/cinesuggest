@@ -1,18 +1,21 @@
 # routers/movies.py
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+
 from app.db import get_db
 from app.models.movie import Movie
 from app.schemas.movie import MovieCreate, MovieOut
+from app.core.deps import get_current_user
+from app.models.user import User  # for typing of current_user
 
 router = APIRouter(
     prefix="/movies",
     tags=["movies"]
 )
 
-# --- POST: Add a new movie ---
+# --- POST: Add a new movie (protected) ---
 @router.post("/", response_model=MovieOut)
-def create_movie(movie: MovieCreate, db: Session = Depends(get_db)):
+def create_movie(movie: MovieCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     # Check if movie already exists
     db_movie = db.query(Movie).filter(Movie.title == movie.title).first()
     if db_movie:
@@ -31,14 +34,14 @@ def create_movie(movie: MovieCreate, db: Session = Depends(get_db)):
     return new_movie
 
 
-# --- GET: Fetch all movies ---
+# --- GET: Fetch all movies (public) ---
 @router.get("/", response_model=list[MovieOut])
 def get_movies(db: Session = Depends(get_db)):
     movies = db.query(Movie).all()
     return movies
 
 
-# --- GET: Fetch a movie by ID ---
+# --- GET: Fetch a movie by ID (public) ---
 @router.get("/{movie_id}", response_model=MovieOut)
 def get_movie(movie_id: int, db: Session = Depends(get_db)):
     movie = db.query(Movie).filter(Movie.id == movie_id).first()

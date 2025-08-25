@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from app.routers import user, movie   # <-- keep this one, remove app.api.v1.users if duplicate
+from app.routers import auth   # <-- keep this one, remove app.api.v1.auth if duplicate
+from app.core import deps
 
 app = FastAPI(
     title="CineSuggest API (Phase 2 - Setup)",
@@ -10,6 +12,8 @@ app = FastAPI(
 # Mount routers under a versioned API prefix
 app.include_router(user.router)
 app.include_router(movie.router)
+app.include_router(auth.router)
+
 
 # A quick root route (optional)
 @app.get("/")

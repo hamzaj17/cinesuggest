@@ -6,6 +6,7 @@ from passlib.context import CryptContext
 from app.db import get_db
 from app.models.user import User
 from app.schemas.user import UserCreate, UserOut
+from app.core.deps import get_current_user  # <- import the shared dependency
 
 router = APIRouter(
     prefix="/users",
@@ -40,7 +41,8 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
 
     return new_user
 
+# Protected: only authenticated users can list users
 @router.get("/", response_model=list[UserOut])
-def list_users(db: Session = Depends(get_db)):
+def list_users(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     users = db.query(User).all()
     return users
