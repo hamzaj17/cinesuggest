@@ -13,6 +13,10 @@ class UserCreate(UserBase):
 class UserOut(UserBase):
     id: int
     created_at: datetime
+    role: str
 
     class Config:
         from_attributes = True  # allows SQLAlchemy model -> Pydantic schema
+
+class UserRoleUpdate(BaseModel):
+    role: str  # "user" or "admin"

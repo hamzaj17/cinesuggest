@@ -9,8 +9,9 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String(255), unique=True, index=True, nullable=False)
     hashed_password = Column(String(255), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    role = Column(String, default="user", nullable=False, index=True)  # "user" | "admin"
+    
     # relationships
     ratings = relationship("Rating", back_populates="user", cascade="all, delete")
     preferences = relationship("UserPreference", back_populates="user", uselist=False, cascade="all, delete")

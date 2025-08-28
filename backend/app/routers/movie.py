@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from app.db import get_db
 from app.models.movie import Movie
 from app.schemas.movie import MovieCreate, MovieOut
-from app.core.deps import get_current_user
+from app.core.deps import get_current_user, require_admin
 from app.models.user import User  # for typing of current_user
 
 router = APIRouter(
@@ -15,7 +15,7 @@ router = APIRouter(
 
 # --- POST: Add a new movie (protected) ---
 @router.post("/", response_model=MovieOut)
-def create_movie(movie: MovieCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def create_movie(movie: MovieCreate, db: Session = Depends(get_db), current_user: User = Depends(require_admin)):
     # Check if movie already exists
     db_movie = db.query(Movie).filter(Movie.title == movie.title).first()
     if db_movie:

@@ -34,3 +34,20 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
     return user
 
+# NEW: role requirement factory
+def require_roles(*roles: str):
+    def _checker(current_user: User = Depends(get_current_user)) -> User:
+        if current_user.role not in roles:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Insufficient permissions")
+        return current_user
+    return _checker
+
+# Optional convenience for most common case
+def require_admin(current_user: User = Depends(get_current_user)) -> User:
+    if current_user.role != "admin":
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admins only")
+    return current_user
+
+@router.get("/me")  # unchanged
+def read_users_me(current_user: User = Depends(get_current_user)):
+    return {"email": current_user.email, "role": current_user.role}
