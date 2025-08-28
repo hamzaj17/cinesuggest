@@ -1,13 +1,16 @@
 from pydantic import BaseModel
+from typing import Optional
 
-class UserPreferenceCreate(BaseModel):
-    user_id: int
-    genre: str
+class UserPreferenceBase(BaseModel):
+    favorite_genres: str   # e.g. "Action, Comedy"
+    min_rating: Optional[float] = None
 
-class UserPreferenceOut(BaseModel):
+class UserPreferenceCreate(UserPreferenceBase):
+    pass
+
+class UserPreferenceOut(UserPreferenceBase):
     id: int
     user_id: int
-    genre: str
 
     class Config:
         orm_mode = True
