@@ -23,7 +23,7 @@ app = FastAPI()
 async def ping():
     return {"message": "pong"}
 
-@app.get("/recommend")
+@app.get("/recommend/{user_id}")
 def recommend(user_id: int, n: int = 5):
     # Movies user has already rated
     seen_movies = ratings.loc[ratings["userId"] == user_id, "movieId"].tolist()
