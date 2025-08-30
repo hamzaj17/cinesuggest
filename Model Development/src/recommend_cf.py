@@ -109,4 +109,4 @@ def get_cf_recommendations_for_title(movie_title, top_n=10):
     # Return only movie titles for hybrid system
     return recs_df['title'].tolist()
 
-print(get_cf_recommendations_for_title("Toy Story", top_n=5))
+# print(get_cf_recommendations_for_title("Toy Story", top_n=5))

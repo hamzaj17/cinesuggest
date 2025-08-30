@@ -74,5 +74,5 @@ def recommend(title, num_recommendations=5):
     return df['title'].iloc[movie_indices].tolist()
 
 # Example usage:
-print("Recommendations for 'Interstellar':")
-print(recommend('Interstellar', num_recommendations=10))
+# print("Recommendations for 'Interstellar':")
+# print(recommend('Interstellar', num_recommendations=10))

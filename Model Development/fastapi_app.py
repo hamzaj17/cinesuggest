@@ -1,8 +1,11 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 import pickle
 import joblib
 import pandas as pd
 from pathlib import Path
+from typing import List
+from src.model_cb import recommend as cb_recommend
+from src.hybrid import hybrid_recommend
 
 MODEL_DIR = Path(__file__).resolve().parents[0] / "models"
 DATA_DIR = Path(__file__).resolve().parents[0] / "data"
@@ -23,7 +26,7 @@ app = FastAPI()
 async def ping():
     return {"message": "pong"}
 
-@app.get("/recommend/{user_id}")
+@app.get("/recommend/cf/{user_id}")
 def recommend(user_id: int, n: int = 5):
     # Movies user has already rated
     seen_movies = ratings.loc[ratings["userId"] == user_id, "movieId"].tolist()
@@ -51,3 +54,32 @@ def recommend(user_id: int, n: int = 5):
         "user_id": user_id,
         "recommendations": recommendations
     }
+
+
+@app.get("/recommend/cb/{movie_title}")
+def recommend_content(movie_title: str, n: int = 5):
+    recs = cb_recommend(movie_title, num_recommendations=n)
+    return {
+        "movie_title": movie_title,
+        "recommendations": recs
+    }
+
+
+@app.get("/recommend/hybrid/{title}")
+def recommend_hybrid(
+    title: str,
+    top_n: int = Query(5, ge=1, le=20),
+    weight_cb: float = Query(0.5, ge=0.0, le=1.0),
+    weight_cf: float = Query(0.5, ge=0.0, le=1.0)
+):
+    """
+    Hybrid Recommendation Endpoint
+    """
+    try:
+        recommendations = hybrid_recommend(title, top_n=top_n, weight_cb=weight_cb, weight_cf=weight_cf)
+        return {
+            "movie_title": title,
+            "recommendations": recommendations
+        }
+    except Exception as e:
+        return {"error": str(e)}
