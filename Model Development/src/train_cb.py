@@ -1,9 +1,8 @@
-#--- model_cb.py:
-
 import pandas as pd
 import ast
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+import pickle
 
 # 1. Load data          
 df = pd.read_csv("D:\cinesuggest\Model Development\data\movies.csv")
@@ -59,20 +58,17 @@ tfidf_matrix = tfidf.fit_transform(df['combined_features'])
 # 2. Build a reverse mapping of movie titles to DataFrame indices
 indices = pd.Series(df.index, index=df['title'].str.lower())
 
-# 3. Recommendation function
-def recommend(title, num_recommendations=5):
-    title = title.lower().strip()
-    if title not in indices:
-        print("Movie not found in the dataset.")
-        return []
-    idx = indices[title]
-    cosine_sim = cosine_similarity(tfidf_matrix[idx], tfidf_matrix)
-    sim_scores = list(enumerate(cosine_sim.flatten()))
-    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
-    sim_scores = sim_scores[1:num_recommendations+1]
-    movie_indices = [i[0] for i in sim_scores]
-    return df['title'].iloc[movie_indices].tolist()
+cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
+titles = df['title'].tolist()
 
-# Example usage:
-# print("Recommendations for 'The Godfather':")
-# print(recommend('The Godfather', num_recommendations=10))
+model_path = "D:\cinesuggest\Model Development\models\cb_model.pkl"
+# saving the model
+with open(model_path, "wb") as f:
+    pickle.dump({
+        "tfidf": tfidf,
+        "tfidf_matrix": tfidf_matrix,
+        "indices": indices,
+        "df": df
+    }, f)
+
+print("✅ Content-Based model trained & saved as cb_model.pkl")
