@@ -105,6 +105,17 @@ def recommend_hybrid(
     weight_cf: float = Query(0.4, ge=0.0, le=1.0)
 ):
     try:
+        user_history = ratings[ratings["userId"] == user_id]
+        if user_history.empty:
+            recs = recommend_cb_logic(title, n=top_n)
+            if not recs:
+                return {"error": f"Movie '{title}' not found in dataset."}
+            return {
+                "movie_title": title,
+                "user_id": user_id,
+                "recommendations": recs
+            }
+        
         recommendations = hybrid_recommend(
             title,
             user_id=user_id,
@@ -112,6 +123,10 @@ def recommend_hybrid(
             weight_cb=weight_cb,
             weight_cf=weight_cf
         )
-        return {"movie_title": title, "recommendations": recommendations}
+        return {
+            "movie_title": title,
+            "user_id": user_id,
+            "recommendations": recommendations
+        }
     except Exception as e:
         return {"error": str(e)}
